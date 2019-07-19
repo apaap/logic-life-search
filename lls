@@ -215,7 +215,9 @@ if args.substitute_solution:
         indent = indent, verbosity = verbosity
     )
     solution = src.LLS_files.string_from_file(args.substitute_solution[1], indent = indent, verbosity = verbosity)
-    solution = re.sub("v ","",re.sub("s ","",solution))
+    solution = re.findall('^[sv] (.*)$', solution, re.M)
+    assert len(solution) >= 2, "No valid solution found in solution file: " + args.substitute_solution[1]
+    solution = solution[0] + '\n' + ' '.join(solution[1:])
     search_pattern = SearchPattern(
         grid,
         ignore_transition = ignore_transition,
